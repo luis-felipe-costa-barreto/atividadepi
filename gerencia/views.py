@@ -90,7 +90,7 @@ def editar_categoria(request, id):
         'form': form,
         'categoria': categoria
     }
-    return render(request, 'gerencia/cadastro_categoria.html',contexto)
+    return render(request, 'gerencia/editar_categoria.html',contexto)
 
 
 # views.py
@@ -114,12 +114,12 @@ def index(request):
 
     # Adiciona a busca de categorias
     form = CategoriaSearchForm(request.GET or None)
-    categorias = Categoria.objects.all()
+    categorias = Categoria.objects.all().order_by('nome')
     if form.is_valid():
         nome = form.cleaned_data.get('nome')
         if nome:
             categorias = categorias.filter(nome__icontains=nome)
-    paginator = Paginator(categorias, 1)
+    paginator = Paginator(categorias, 2)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     contexto = {
