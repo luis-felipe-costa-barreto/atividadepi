@@ -3,6 +3,7 @@ from .forms import *
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from .models import Noticia, Categoria
+from django.core.paginator import Paginator
 
 # Create your views here.
 @login_required
@@ -118,10 +119,12 @@ def index(request):
         nome = form.cleaned_data.get('nome')
         if nome:
             categorias = categorias.filter(nome__icontains=nome)
-
+    paginator = Paginator(categorias, 1)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     contexto = {
         'noticias': noticias,
-        'categorias': categorias,
+        'categorias': page_obj,
         'categoria_selecionada': categoria_nome,
         'search_query': search_query,
         'form': form,
