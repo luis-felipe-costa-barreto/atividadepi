@@ -25,6 +25,9 @@ class CategoriaForm(forms.ModelForm):
         widgets = {
             'nome': forms.TextInput(attrs={'class': 'form-control'}),
         }
+        def __init__(self, *args, **kwargs):
+            super(CategoriaForm, self).__init__(*args, **kwargs)
+            self.fields['nome'].required = True
 
 
 
