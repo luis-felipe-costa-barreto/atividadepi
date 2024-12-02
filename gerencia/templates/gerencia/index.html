@@ -83,8 +83,9 @@
                                 <ul class="list-unstyled mb-0">
                                     {% for categoria in categorias %}
                                         <li>
-                                            <a href="?categoria={{ categoria.nome }}">
+                                            <a href="{% url 'editar_categoria' categoria.id %}">
                                                 {{ categoria.nome }}
+                                                
                                             </a>
                                         </li>
                                     {% endfor %}

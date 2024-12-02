@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from .forms import NoticiaForm, NoticiaFilterForm
+from .forms import *
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from .models import Noticia, Categoria
@@ -45,6 +45,18 @@ def cadastrar_noticia(request):
     contexto = {'form': form}
     return render(request, 'gerencia/cadastro_noticia.html', contexto)
 
+def cadastrar_categoria(request):
+    if request.method == 'POST':
+        form = CategoriaForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save() 
+            return redirect('index')
+    else:
+        form = CategoriaForm()
+
+    contexto = {'form': form}
+    return render(request, 'gerencia/cadastro_categoria.html', contexto)
+
 @login_required
 def editar_noticia(request, id):
     noticia = Noticia.objects.get(id=id)
@@ -63,7 +75,21 @@ def editar_noticia(request, id):
     }
     return render(request, 'gerencia/cadastro_noticia.html',contexto)
 
-
+def editar_categoria(request, id):
+    categoria = Categoria.objects.get(id=id)
+    if request.method == 'POST':
+        form = CategoriaForm(request.POST, request.FILES, instance=categoria)
+        if form.is_valid():
+            form.save()
+            return redirect('index')
+    else:
+        form = CategoriaForm(instance=categoria)
+    
+    contexto = {
+        'form': form,
+        'categoria': categoria
+    }
+    return render(request, 'gerencia/cadastro_categoria.html',contexto)
 
 
 def index(request):
@@ -89,3 +115,12 @@ def index(request):
         'search_query': search_query,
     }
     return render(request, 'gerencia/index.html', contexto)
+
+
+def excluir(request, id):
+    categoria = Categoria.objects.get(id=id)
+    if request.method == 'POST':
+        form = CategoriaForm(request.POST, request.FILES, instance=categoria)
+        categoria.delete()
+        return redirect('index')
+    return render(request, 'gerencia/excluir.html')
