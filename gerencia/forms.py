@@ -1,6 +1,9 @@
 from django import forms
 from .models import Noticia, Categoria
 
+class CategoriaSearchForm(forms.Form):
+    nome = forms.CharField(max_length=100, required=False)
+
 class NoticiaForm(forms.ModelForm):
     
     class Meta:

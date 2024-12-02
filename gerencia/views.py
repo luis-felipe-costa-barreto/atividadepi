@@ -92,6 +92,11 @@ def editar_categoria(request, id):
     return render(request, 'gerencia/cadastro_categoria.html',contexto)
 
 
+# views.py
+from django.shortcuts import render
+from .models import Categoria, Noticia
+from .forms import CategoriaSearchForm
+
 def index(request):
     categoria_nome = request.GET.get('categoria')  # Obtém o parâmetro 'categoria' da URL
     search_query = request.GET.get('search')  # Obtém o parâmetro de busca
@@ -106,15 +111,23 @@ def index(request):
     if search_query:
         noticias = noticias.filter(titulo__icontains=search_query)  # Filtra por título, ignorando maiúsculas/minúsculas
 
-    categorias = Categoria.objects.all()  # Pega todas as categorias para exibir no template
+    # Adiciona a busca de categorias
+    form = CategoriaSearchForm(request.GET or None)
+    categorias = Categoria.objects.all()
+    if form.is_valid():
+        nome = form.cleaned_data.get('nome')
+        if nome:
+            categorias = categorias.filter(nome__icontains=nome)
 
     contexto = {
         'noticias': noticias,
         'categorias': categorias,
         'categoria_selecionada': categoria_nome,
         'search_query': search_query,
+        'form': form,
     }
     return render(request, 'gerencia/index.html', contexto)
+
 
 
 def excluir(request, id):
