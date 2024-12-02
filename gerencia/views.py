@@ -46,6 +46,7 @@ def cadastrar_noticia(request):
     contexto = {'form': form}
     return render(request, 'gerencia/cadastro_noticia.html', contexto)
 
+@login_required
 def cadastrar_categoria(request):
     if request.method == 'POST':
         form = CategoriaForm(request.POST, request.FILES)
@@ -76,6 +77,7 @@ def editar_noticia(request, id):
     }
     return render(request, 'gerencia/cadastro_noticia.html',contexto)
 
+@login_required
 def editar_categoria(request, id):
     categoria = Categoria.objects.get(id=id)
     if request.method == 'POST':
@@ -98,6 +100,7 @@ from django.shortcuts import render
 from .models import Categoria, Noticia
 from .forms import CategoriaSearchForm
 
+@login_required
 def index(request):
     categoria_nome = request.GET.get('categoria')  # Obtém o parâmetro 'categoria' da URL
     search_query = request.GET.get('search')  # Obtém o parâmetro de busca
@@ -131,8 +134,7 @@ def index(request):
     }
     return render(request, 'gerencia/index.html', contexto)
 
-
-
+@login_required
 def excluir(request, id):
     categoria = Categoria.objects.get(id=id)
     if request.method == 'POST':
